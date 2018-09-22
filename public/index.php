@@ -37,6 +37,27 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
+$container['view'] = new \Slim\Views\PhpRenderer('../templates/');
+
+$app->get('/tickets', function ($request, $response) {
+    $this->logger->addInfo('ticket list');
+    $mapper = new TicketMapper($this->db);
+    $tickets = $mapper->getTickets();
+
+    $response = $this->view->render($response, 'tickets.phtml', ['tickets' => $tickets, 'router' => $this->router()]);
+    return $response;
+}
+
+$app->get('/ticket/{id}', function ($request, $response, $args) {
+    $ticket_id = (int)$args['id'];
+    $mapper = new TicketMapper($this->db);
+    $ticket = $mapper->getTicketById($ticket_id);
+    $response->getBody()->write(var_export($ticket, true));
+    return $response;
+
+// giving a name to a route
+})->setName('ticket-detail');
+
 $app->get('/hello/{name}', function ($request, $response, $args) {
     $name = $args['name'];
     $response->getBody()->write("Hello, $name");
