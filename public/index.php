@@ -46,7 +46,7 @@ $app->get('/tickets', function ($request, $response) {
 
     $response = $this->view->render($response, 'tickets.phtml', ['tickets' => $tickets, 'router' => $this->router()]);
     return $response;
-}
+});
 
 $app->get('/ticket/{id}', function ($request, $response, $args) {
     $ticket_id = (int)$args['id'];
